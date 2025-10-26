@@ -176,7 +176,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           setState(() => _obscurePassword = !_obscurePassword);
                         },
                       ),
-                      helperText: '至少6个字符',
                     ),
                     textInputAction: TextInputAction.next,
                     onChanged: (value) {
@@ -216,7 +215,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               () => _obscureConfirmPassword = !_obscureConfirmPassword);
                         },
                       ),
-                      helperText: '确保两次密码一致',
                     ),
                     textInputAction: TextInputAction.done,
                     onFieldSubmitted: (_) => _handleRegister(),
