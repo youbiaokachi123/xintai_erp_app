@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'screens/auth/login_screen.dart';
-import 'screens/home_screen.dart';
+import 'screens/tenant_list_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -137,7 +137,7 @@ class AuthWrapper extends StatelessWidget {
         if (snapshot.hasData) {
           final session = snapshot.data!.session;
           if (session != null) {
-            return const HomeScreen();
+            return const TenantListScreen();
           }
         }
         return const LoginScreen();
