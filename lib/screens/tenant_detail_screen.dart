@@ -25,6 +25,7 @@ class _TenantDetailScreenState extends State<TenantDetailScreen> {
   late TextEditingController _descriptionController;
 
   bool _isLoading = false;
+  bool _isDeleting = false;
   bool _isEditing = false;
 
   @override
@@ -154,7 +155,7 @@ class _TenantDetailScreenState extends State<TenantDetailScreen> {
     );
 
     if (confirm == true) {
-      setState(() => _isLoading = true);
+      setState(() => _isDeleting = true);
       try {
         await _tenantService.deleteTenant(widget.tenant.id);
         _showSuccessMessage('租户删除成功');
@@ -162,7 +163,7 @@ class _TenantDetailScreenState extends State<TenantDetailScreen> {
       } catch (e) {
         _showErrorMessage('删除失败');
       } finally {
-        setState(() => _isLoading = false);
+        setState(() => _isDeleting = false);
       }
     }
   }
@@ -217,15 +218,25 @@ class _TenantDetailScreenState extends State<TenantDetailScreen> {
                     ),
             ),
           if (!_isEditing && !isCreating)
-            IconButton(
-              icon: const Icon(Icons.delete, color: Color(0xFFFF6B6B)),
-              onPressed: _deleteTenant,
-            ),
+            _isDeleting
+                ? const Padding(
+                    padding: EdgeInsets.all(16.0),
+                    child: SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFFF6B6B)),
+                      ),
+                    ),
+                  )
+                : IconButton(
+                    icon: const Icon(Icons.delete, color: Color(0xFFFF6B6B)),
+                    onPressed: _deleteTenant,
+                  ),
         ],
       ),
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : SingleChildScrollView(
+      body: SingleChildScrollView(
               padding: const EdgeInsets.all(16),
               child: Form(
                 key: _formKey,
