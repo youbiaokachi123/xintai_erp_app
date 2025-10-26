@@ -13,7 +13,7 @@ class TenantService {
       }
 
       final response = await _supabase
-          .from('tenants')
+          .from('tenant')
           .select()
           .eq('user_id', userId)
           .order('created_at', ascending: false);
@@ -32,7 +32,7 @@ class TenantService {
   Future<Tenant> getTenantById(String tenantId) async {
     try {
       final response = await _supabase
-          .from('tenants')
+          .from('tenant')
           .select()
           .eq('id', tenantId)
           .single();
@@ -59,7 +59,7 @@ class TenantService {
       }
 
       final now = DateTime.now();
-      final response = await _supabase.from('tenants').insert({
+      final response = await _supabase.from('tenant').insert({
         'name': name,
         'address': address,
         'contact_name': contactName,
@@ -100,7 +100,7 @@ class TenantService {
       if (description != null) updateData['description'] = description;
 
       final response = await _supabase
-          .from('tenants')
+          .from('tenant')
           .update(updateData)
           .eq('id', tenantId)
           .select()
@@ -115,7 +115,7 @@ class TenantService {
   // 删除租户
   Future<void> deleteTenant(String tenantId) async {
     try {
-      await _supabase.from('tenants').delete().eq('id', tenantId);
+      await _supabase.from('tenant').delete().eq('id', tenantId);
     } catch (e) {
       throw Exception('删除租户失败: $e');
     }
@@ -130,7 +130,7 @@ class TenantService {
       }
 
       final response = await _supabase
-          .from('tenants')
+          .from('tenant')
           .select()
           .eq('user_id', userId)
           .or('name.ilike.%$query%,address.ilike.%$query%,contact_name.ilike.%$query%')

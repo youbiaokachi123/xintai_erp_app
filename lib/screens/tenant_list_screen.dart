@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import '../models/tenant.dart';
 import '../service/tenant_service.dart';
+import '../service/tenant_state_service.dart';
 import 'tenant_detail_screen.dart';
+import 'home_screen.dart';
 
 class TenantListScreen extends StatefulWidget {
   const TenantListScreen({super.key});
@@ -12,6 +14,7 @@ class TenantListScreen extends StatefulWidget {
 
 class _TenantListScreenState extends State<TenantListScreen> {
   final TenantService _tenantService = TenantService();
+  final TenantStateService _tenantStateService = TenantStateService.instance;
   final TextEditingController _searchController = TextEditingController();
   List<Tenant> _tenants = [];
   List<Tenant> _filteredTenants = [];
@@ -80,6 +83,18 @@ class _TenantListScreenState extends State<TenantListScreen> {
         ),
         margin: const EdgeInsets.all(16),
       ),
+    );
+  }
+
+  void _navigateToHome(Tenant tenant) {
+    // 设置当前租户
+    _tenantStateService.setCurrentTenant(tenant);
+
+    // 跳转到首页并清除所有之前的路由栈
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => const HomeScreen()),
+      (route) => false,
     );
   }
 
@@ -218,7 +233,8 @@ class _TenantListScreenState extends State<TenantListScreen> {
       ),
       child: InkWell(
         borderRadius: BorderRadius.circular(12),
-        onTap: () => _navigateToDetail(tenant),
+        onTap: () => _navigateToHome(tenant),
+        onLongPress: () => _navigateToDetail(tenant),
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Column(
