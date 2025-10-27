@@ -21,128 +21,114 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F5F5),
-      body: SafeArea(
-        child: Column(
+      appBar: AppBar(
+        title: Row(
           children: [
-            // 顶部导航栏
+            // 用户头像
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                border: Border(
-                  bottom: BorderSide(color: Color(0xFFEEEEEE), width: 1),
-                ),
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                color: const Color(0xFF4A90E2),
+                borderRadius: BorderRadius.circular(20),
               ),
-              child: Row(
-                children: [
-                  // 用户头像
-                  Container(
-                    width: 40,
-                    height: 40,
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF4A90E2),
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: const Icon(
-                      Icons.person,
-                      color: Colors.white,
-                      size: 24,
-                    ),
-                  ),
-                  const SizedBox(width: 12),
+              child: const Icon(Icons.person, color: Colors.white, size: 24),
+            ),
+            const SizedBox(width: 12),
 
-                  // 租户信息
-                  Expanded(
-                    child: PopupMenuButton<String>(
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Flexible(
-                            child: Text(
-                              _tenantStateService.currentTenantName,
-                              style: const TextStyle(
-                                color: Color(0xFF333333),
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
-                              ),
-                              overflow: TextOverflow.ellipsis,
-                            ),
+            // 租户信息
+            Expanded(
+              child: PopupMenuButton<String>(
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Flexible(
+                      child: Text(
+                        _tenantStateService.currentTenantName,
+                        style: const TextStyle(
+                          color: Color(0xFF333333),
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    const SizedBox(width: 6),
+                    Icon(
+                      Icons.keyboard_arrow_down,
+                      color: const Color(0xFF666666),
+                      size: 20,
+                    ),
+                  ],
+                ),
+                onSelected: (value) async {
+                  if (value == 'switch_tenant') {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const TenantListScreen(),
+                      ),
+                    );
+                  } else if (value == 'logout') {
+                    final confirm = await showDialog<bool>(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        title: const Text('确认退出'),
+                        content: const Text('您确定要退出登录吗？'),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.pop(context, false),
+                            child: const Text('取消'),
                           ),
-                          const SizedBox(width: 6),
-                          Icon(
-                            Icons.keyboard_arrow_down,
-                            color: const Color(0xFF666666),
-                            size: 20,
+                          TextButton(
+                            onPressed: () => Navigator.pop(context, true),
+                            child: const Text('退出'),
                           ),
                         ],
                       ),
-                      onSelected: (value) async {
-                        if (value == 'switch_tenant') {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const TenantListScreen(),
-                            ),
-                          );
-                        } else if (value == 'logout') {
-                          final confirm = await showDialog<bool>(
-                            context: context,
-                            builder: (context) => AlertDialog(
-                              title: const Text('确认退出'),
-                              content: const Text('您确定要退出登录吗？'),
-                              actions: [
-                                TextButton(
-                                  onPressed: () => Navigator.pop(context, false),
-                                  child: const Text('取消'),
-                                ),
-                                TextButton(
-                                  onPressed: () => Navigator.pop(context, true),
-                                  child: const Text('退出'),
-                                ),
-                              ],
-                            ),
-                          );
+                    );
 
-                          if (confirm == true && context.mounted) {
-                            await _authService.signOut();
-                            _tenantStateService.clearCurrentTenant();
-                            if (context.mounted) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('已退出登录')),
-                              );
-                            }
-                          }
-                        }
-                      },
-                      itemBuilder: (context) => [
-                        const PopupMenuItem<String>(
-                          value: 'switch_tenant',
-                          child: Row(
-                            children: [
-                              Icon(Icons.swap_horiz, size: 18),
-                              SizedBox(width: 8),
-                              Text('切换租户'),
-                            ],
-                          ),
-                        ),
-                        const PopupMenuItem<String>(
-                          value: 'logout',
-                          child: Row(
-                            children: [
-                              Icon(Icons.logout, size: 18),
-                              SizedBox(width: 8),
-                              Text('退出登录'),
-                            ],
-                          ),
-                        ),
+                    if (confirm == true && context.mounted) {
+                      await _authService.signOut();
+                      _tenantStateService.clearCurrentTenant();
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(
+                          context,
+                        ).showSnackBar(const SnackBar(content: Text('已退出登录')));
+                      }
+                    }
+                  }
+                },
+                itemBuilder: (context) => [
+                  const PopupMenuItem<String>(
+                    value: 'switch_tenant',
+                    child: Row(
+                      children: [
+                        Icon(Icons.swap_horiz, size: 18),
+                        SizedBox(width: 8),
+                        Text('切换租户'),
+                      ],
+                    ),
+                  ),
+                  const PopupMenuItem<String>(
+                    value: 'logout',
+                    child: Row(
+                      children: [
+                        Icon(Icons.logout, size: 18),
+                        SizedBox(width: 8),
+                        Text('退出登录'),
                       ],
                     ),
                   ),
                 ],
               ),
             ),
-
+          ],
+        ),
+      ),
+      body: SafeArea(
+        child: Column(
+          children: [
             // 主要内容
             Expanded(
               child: SingleChildScrollView(
@@ -173,103 +159,46 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // 构建一键服务按钮
-  Widget _buildQuickServiceButtons() {
-    return Row(
-      children: [
-        Expanded(
-          child: _buildQuickServiceButton(
-            '一键呼叫',
-            Icons.call,
-            const Color(0xFF4CAF50),
-            () => _handleQuickService('呼叫'),
-          ),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: _buildQuickServiceButton(
-            '一键报修',
-            Icons.build,
-            const Color(0xFFFF9800),
-            () => _handleQuickService('报修'),
-          ),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: _buildQuickServiceButton(
-            '一键报警',
-            Icons.warning,
-            const Color(0xFFF44336),
-            () => _handleQuickService('报警'),
-          ),
-        ),
-      ],
-    );
-  }
-
-  // 构建单个一键服务按钮
-  Widget _buildQuickServiceButton(String title, IconData icon, Color color, VoidCallback onTap) {
-    return InkWell(
-      onTap: () {
-        if (!_tenantStateService.hasCurrentTenant) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('请先选择一个租户'),
-              backgroundColor: Color(0xFFFF6B6B),
-            ),
-          );
-          return;
-        }
-        onTap();
-      },
-      borderRadius: BorderRadius.circular(12),
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: color,
-          borderRadius: BorderRadius.circular(12),
-          boxShadow: [
-            BoxShadow(
-              color: color.withOpacity(0.3),
-              blurRadius: 8,
-              offset: const Offset(0, 2),
-            ),
-          ],
-        ),
-        child: Column(
-          children: [
-            Icon(
-              icon,
-              size: 32,
-              color: Colors.white,
-            ),
-            const SizedBox(height: 8),
-            Text(
-              title,
-              style: const TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-                color: Colors.white,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 
   // 构建服务项目网格
   Widget _buildServiceGrid() {
     final services = [
       {'name': '员工管理', 'icon': Icons.people, 'color': const Color(0xFF4CAF50)},
-      {'name': '客户管理', 'icon': Icons.business, 'color': const Color(0xFF2196F3)},
-      {'name': '薪资管理', 'icon': Icons.account_balance_wallet, 'color': const Color(0xFFFF9800)},
-      {'name': '考勤管理', 'icon': Icons.schedule, 'color': const Color(0xFF9C27B0)},
-      {'name': '项目管理', 'icon': Icons.assignment, 'color': const Color(0xFF00BCD4)},
-      {'name': '财务管理', 'icon': Icons.attach_money, 'color': const Color(0xFF607D8B)},
-      {'name': '库存管理', 'icon': Icons.inventory, 'color': const Color(0xFF795548)},
-      {'name': '报表分析', 'icon': Icons.bar_chart, 'color': const Color(0xFF3F51B5)},
+      {
+        'name': '客户管理',
+        'icon': Icons.business,
+        'color': const Color(0xFF2196F3),
+      },
+      {
+        'name': '薪资管理',
+        'icon': Icons.account_balance_wallet,
+        'color': const Color(0xFFFF9800),
+      },
+      {
+        'name': '考勤管理',
+        'icon': Icons.schedule,
+        'color': const Color(0xFF9C27B0),
+      },
+      {
+        'name': '项目管理',
+        'icon': Icons.assignment,
+        'color': const Color(0xFF00BCD4),
+      },
+      {
+        'name': '财务管理',
+        'icon': Icons.attach_money,
+        'color': const Color(0xFF607D8B),
+      },
+      {
+        'name': '库存管理',
+        'icon': Icons.inventory,
+        'color': const Color(0xFF795548),
+      },
+      {
+        'name': '报表分析',
+        'icon': Icons.bar_chart,
+        'color': const Color(0xFF3F51B5),
+      },
     ];
 
     return GridView.builder(
@@ -307,11 +236,7 @@ class _HomeScreenState extends State<HomeScreen> {
               color: color.withOpacity(0.1),
               borderRadius: BorderRadius.circular(8),
             ),
-            child: Icon(
-              icon,
-              size: 28,
-              color: color,
-            ),
+            child: Icon(icon, size: 28, color: color),
           ),
           const SizedBox(height: 8),
           Text(
@@ -324,32 +249,6 @@ class _HomeScreenState extends State<HomeScreen> {
             textAlign: TextAlign.center,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-          ),
-        ],
-      ),
-    );
-  }
-
-  // 处理一键服务
-  void _handleQuickService(String serviceType) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text('$serviceType服务'),
-        content: Text('您确认要使用$serviceType服务吗？'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('取消'),
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('$serviceType服务已触发')),
-              );
-            },
-            child: const Text('确认'),
           ),
         ],
       ),
@@ -372,33 +271,26 @@ class _HomeScreenState extends State<HomeScreen> {
       case '员工管理':
         Navigator.push(
           context,
-          MaterialPageRoute(
-            builder: (context) => const EmployeeListScreen(),
-          ),
+          MaterialPageRoute(builder: (context) => const EmployeeListScreen()),
         );
         break;
       case '客户管理':
         Navigator.push(
           context,
-          MaterialPageRoute(
-            builder: (context) => const CustomerListScreen(),
-          ),
+          MaterialPageRoute(builder: (context) => const CustomerListScreen()),
         );
         break;
       case '薪资管理':
         Navigator.push(
           context,
-          MaterialPageRoute(
-            builder: (context) => const SalaryListScreen(),
-          ),
+          MaterialPageRoute(builder: (context) => const SalaryListScreen()),
         );
         break;
       default:
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('$serviceName功能开发中')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('$serviceName功能开发中')));
         break;
     }
   }
-
 }

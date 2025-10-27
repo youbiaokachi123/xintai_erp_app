@@ -35,7 +35,6 @@ class MyApp extends StatelessWidget {
         // 自定义主题色彩 - 简约清新风格
         scaffoldBackgroundColor: const Color(0xFFF8FAFB), // 浅灰白色背景
         appBarTheme: const AppBarTheme(
-          backgroundColor: Colors.transparent,
           elevation: 0,
           scrolledUnderElevation: 0,
           titleTextStyle: TextStyle(
