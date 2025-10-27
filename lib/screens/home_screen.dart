@@ -35,50 +35,57 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  InkWell(
-                    onTap: () {
-                      // 跳转到租户选择页面
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const TenantListScreen(),
-                        ),
-                      );
-                    },
-                    child: Row(
-                      children: [
-                        Text(
-                          _tenantStateService.currentTenantName,
-                          style: const TextStyle(
-                            color: Color(0xFF333333),
-                            fontSize: 18,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                        const SizedBox(width: 6),
-                        Icon(
-                          Icons.keyboard_arrow_down,
-                          color: const Color(0xFF666666),
-                          size: 20,
-                        ),
-                      ],
+                  // 用户头像
+                  Container(
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF4A90E2),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: const Icon(
+                      Icons.person,
+                      color: Colors.white,
+                      size: 24,
                     ),
                   ),
-                  Row(
-                    children: [
-                      IconButton(
-                        icon: const Icon(Icons.notifications_outlined),
-                        onPressed: () {
-                          // 通知功能
-                        },
-                        iconSize: 24,
-                        color: const Color(0xFF666666),
+                  const SizedBox(width: 12),
+
+                  // 租户信息
+                  Expanded(
+                    child: PopupMenuButton<String>(
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Flexible(
+                            child: Text(
+                              _tenantStateService.currentTenantName,
+                              style: const TextStyle(
+                                color: Color(0xFF333333),
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          const SizedBox(width: 6),
+                          Icon(
+                            Icons.keyboard_arrow_down,
+                            color: const Color(0xFF666666),
+                            size: 20,
+                          ),
+                        ],
                       ),
-                      IconButton(
-                        icon: const Icon(Icons.logout),
-                        onPressed: () async {
+                      onSelected: (value) async {
+                        if (value == 'switch_tenant') {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const TenantListScreen(),
+                            ),
+                          );
+                        } else if (value == 'logout') {
                           final confirm = await showDialog<bool>(
                             context: context,
                             builder: (context) => AlertDialog(
@@ -106,11 +113,31 @@ class _HomeScreenState extends State<HomeScreen> {
                               );
                             }
                           }
-                        },
-                        iconSize: 24,
-                        color: const Color(0xFF666666),
-                      ),
-                    ],
+                        }
+                      },
+                      itemBuilder: (context) => [
+                        const PopupMenuItem<String>(
+                          value: 'switch_tenant',
+                          child: Row(
+                            children: [
+                              Icon(Icons.swap_horiz, size: 18),
+                              SizedBox(width: 8),
+                              Text('切换租户'),
+                            ],
+                          ),
+                        ),
+                        const PopupMenuItem<String>(
+                          value: 'logout',
+                          child: Row(
+                            children: [
+                              Icon(Icons.logout, size: 18),
+                              SizedBox(width: 8),
+                              Text('退出登录'),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
@@ -123,77 +150,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // 欢迎区域
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.all(20),
-                      decoration: BoxDecoration(
-                        gradient: const LinearGradient(
-                          colors: [Color(0xFF4A90E2), Color(0xFF357ABD)],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                        ),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            '您好',
-                            style: TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.white,
-                            ),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            '您正在使用 ${_tenantStateService.currentTenantName}',
-                            style: const TextStyle(
-                              fontSize: 16,
-                              color: Colors.white70,
-                            ),
-                          ),
-                          if (!_tenantStateService.hasCurrentTenant) ...[
-                            const SizedBox(height: 12),
-                            Container(
-                              padding: const EdgeInsets.all(12),
-                              decoration: BoxDecoration(
-                                color: Colors.white.withOpacity(0.2),
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: const Row(
-                                children: [
-                                  Icon(
-                                    Icons.info_outline,
-                                    color: Colors.white,
-                                    size: 20,
-                                  ),
-                                  SizedBox(width: 8),
-                                  Expanded(
-                                    child: Text(
-                                      '请先选择一个租户',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 14,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ],
-                      ),
-                    ),
-
-                    const SizedBox(height: 24),
-
-                    // 一键服务按钮
-                    _buildQuickServiceButtons(),
-
-                    const SizedBox(height: 24),
-
                     // 服务项目标题
                     const Text(
                       '服务项目',
@@ -341,43 +297,35 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildServiceItem(String name, IconData icon, Color color) {
     return InkWell(
       onTap: () => _handleServiceTap(name),
-      borderRadius: BorderRadius.circular(12),
-      child: Container(
-        padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: const Color(0xFFE0E0E0), width: 1),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: color.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Icon(
-                icon,
-                size: 24,
-                color: color,
-              ),
+      borderRadius: BorderRadius.circular(8),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: color.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(8),
             ),
-            const SizedBox(height: 8),
-            Text(
-              name,
-              style: const TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.w500,
-                color: Color(0xFF333333),
-              ),
-              textAlign: TextAlign.center,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
+            child: Icon(
+              icon,
+              size: 28,
+              color: color,
             ),
-          ],
-        ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            name,
+            style: const TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+              color: Color(0xFF333333),
+            ),
+            textAlign: TextAlign.center,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ],
       ),
     );
   }
