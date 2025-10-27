@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:xintai_flutter/service/auth_service.dart';
 import 'package:xintai_flutter/service/tenant_state_service.dart';
+import 'package:xintai_flutter/widgets/service_grid.dart';
 
 import 'customer/customer_list_screen.dart';
 import 'employee/employee_list_screen.dart';
@@ -163,95 +164,62 @@ class _HomeScreenState extends State<HomeScreen> {
   // 构建服务项目网格
   Widget _buildServiceGrid() {
     final services = [
-      {'name': '员工管理', 'icon': Icons.people, 'color': const Color(0xFF4CAF50)},
-      {
-        'name': '客户管理',
-        'icon': Icons.business,
-        'color': const Color(0xFF2196F3),
-      },
-      {
-        'name': '薪资管理',
-        'icon': Icons.account_balance_wallet,
-        'color': const Color(0xFFFF9800),
-      },
-      {
-        'name': '考勤管理',
-        'icon': Icons.schedule,
-        'color': const Color(0xFF9C27B0),
-      },
-      {
-        'name': '项目管理',
-        'icon': Icons.assignment,
-        'color': const Color(0xFF00BCD4),
-      },
-      {
-        'name': '财务管理',
-        'icon': Icons.attach_money,
-        'color': const Color(0xFF607D8B),
-      },
-      {
-        'name': '库存管理',
-        'icon': Icons.inventory,
-        'color': const Color(0xFF795548),
-      },
-      {
-        'name': '报表分析',
-        'icon': Icons.bar_chart,
-        'color': const Color(0xFF3F51B5),
-      },
+      ServiceItem(
+        name: '员工管理',
+        icon: Icons.people,
+        color: const Color(0xFF4CAF50),
+        onTap: () => _handleServiceTap('员工管理'),
+      ),
+      ServiceItem(
+        name: '客户管理',
+        icon: Icons.business,
+        color: const Color(0xFF2196F3),
+        onTap: () => _handleServiceTap('客户管理'),
+      ),
+      ServiceItem(
+        name: '薪资管理',
+        icon: Icons.account_balance_wallet,
+        color: const Color(0xFFFF9800),
+        onTap: () => _handleServiceTap('薪资管理'),
+      ),
+      ServiceItem(
+        name: '考勤管理',
+        icon: Icons.schedule,
+        color: const Color(0xFF9C27B0),
+        onTap: () => _handleServiceTap('考勤管理'),
+      ),
+      ServiceItem(
+        name: '项目管理',
+        icon: Icons.assignment,
+        color: const Color(0xFF00BCD4),
+        onTap: () => _handleServiceTap('项目管理'),
+      ),
+      ServiceItem(
+        name: '财务管理',
+        icon: Icons.attach_money,
+        color: const Color(0xFF607D8B),
+        onTap: () => _handleServiceTap('财务管理'),
+      ),
+      ServiceItem(
+        name: '库存管理',
+        icon: Icons.inventory,
+        color: const Color(0xFF795548),
+        onTap: () => _handleServiceTap('库存管理'),
+      ),
+      ServiceItem(
+        name: '报表分析',
+        icon: Icons.bar_chart,
+        color: const Color(0xFF3F51B5),
+        onTap: () => _handleServiceTap('报表分析'),
+      ),
     ];
 
-    return GridView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 4,
-        crossAxisSpacing: 6,
-        mainAxisSpacing: 6,
-        childAspectRatio: 0.8,
-      ),
-      itemCount: services.length,
-      itemBuilder: (context, index) {
-        final service = services[index];
-        return _buildServiceItem(
-          service['name'] as String,
-          service['icon'] as IconData,
-          service['color'] as Color,
-        );
-      },
-    );
-  }
-
-  // 构建单个服务项目
-  Widget _buildServiceItem(String name, IconData icon, Color color) {
-    return InkWell(
-      onTap: () => _handleServiceTap(name),
-      borderRadius: BorderRadius.circular(8),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: color.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Icon(icon, size: 28, color: color),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            name,
-            style: const TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w500,
-              color: Color(0xFF333333),
-            ),
-            textAlign: TextAlign.center,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ],
-      ),
+    return ServiceGrid(
+      services: services,
+      crossAxisCount: 4,
+      crossAxisSpacing: 6,
+      mainAxisSpacing: 6,
+      childAspectRatio: 0.8,
     );
   }
 
