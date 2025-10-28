@@ -401,6 +401,14 @@ class _EmployeeListScreenState extends State<EmployeeListScreen> {
                             ),
                           ),
                         ],
+                        Text(
+                          employee.employeeTypeDisplay,
+                          style: const TextStyle(
+                            fontSize: 12,
+                            color: Color(0xFF059669),
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
                       ],
                     ),
                   ),

@@ -56,6 +56,7 @@ class EmployeeService {
     String? email,
     String? employeeNumber,
     String? position,
+    String employeeType = 'general',
     required DateTime hireDate,
     String status = 'active',
     String? address,
@@ -89,6 +90,7 @@ class EmployeeService {
         'email': email,
         'employee_number': employeeNumber,
         'position': position,
+        'employee_type': employeeType,
         'hire_date': hireDate.toIso8601String().split('T')[0],
         'status': status,
         'address': address,
@@ -119,6 +121,7 @@ class EmployeeService {
     String? email,
     String? employeeNumber,
     String? position,
+    String? employeeType,
     DateTime? hireDate,
     String? status,
     String? address,
@@ -151,6 +154,7 @@ class EmployeeService {
       if (email != null) updateData['email'] = email;
       if (employeeNumber != null) updateData['employee_number'] = employeeNumber;
       if (position != null) updateData['position'] = position;
+      if (employeeType != null) updateData['employee_type'] = employeeType;
       if (hireDate != null) updateData['hire_date'] = hireDate.toIso8601String().split('T')[0];
       if (status != null) updateData['status'] = status;
       if (address != null) updateData['address'] = address;

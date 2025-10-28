@@ -30,10 +30,20 @@ class _EmployeeFormScreenState extends State<EmployeeFormScreen> {
   DateTime? _birthDate;
   DateTime? _hireDate;
   String _selectedStatus = 'active';
+  String _selectedEmployeeType = 'general';
 
   bool _isLoading = false;
 
   final List<String> _genders = ['男', '女', '其他'];
+  final List<Map<String, String>> _employeeTypeOptions = [
+    {'value': 'general', 'label': '一般工人'},
+    {'value': 'packager', 'label': '包装工'},
+    {'value': 'ironer', 'label': '烫衣工'},
+    {'value': 'seamstress', 'label': '缝纫工'},
+    {'value': 'cutter', 'label': '裁剪工'},
+    {'value': 'quality_inspector', 'label': '质检员'},
+    {'value': 'other', 'label': '其他'},
+  ];
   final List<Map<String, String>> _statusOptions = [
     {'value': 'active', 'label': '在职'},
     {'value': 'inactive', 'label': '休假'},
@@ -78,6 +88,7 @@ class _EmployeeFormScreenState extends State<EmployeeFormScreen> {
     _selectedGender = employee.gender;
     _birthDate = employee.birthDate;
     _hireDate = employee.hireDate;
+    _selectedEmployeeType = employee.employeeType;
     _selectedStatus = employee.status;
   }
 
@@ -120,6 +131,7 @@ class _EmployeeFormScreenState extends State<EmployeeFormScreen> {
           email: _emailController.text.trim().isEmpty ? null : _emailController.text.trim(),
           employeeNumber: _employeeNumberController.text.trim().isEmpty ? null : _employeeNumberController.text.trim(),
           position: _positionController.text.trim().isEmpty ? null : _positionController.text.trim(),
+          employeeType: _selectedEmployeeType,
           hireDate: _hireDate!,
           status: _selectedStatus,
           address: _addressController.text.trim().isEmpty ? null : _addressController.text.trim(),
@@ -138,6 +150,7 @@ class _EmployeeFormScreenState extends State<EmployeeFormScreen> {
           email: _emailController.text.trim().isEmpty ? null : _emailController.text.trim(),
           employeeNumber: _employeeNumberController.text.trim().isEmpty ? null : _employeeNumberController.text.trim(),
           position: _positionController.text.trim().isEmpty ? null : _positionController.text.trim(),
+          employeeType: _selectedEmployeeType,
           hireDate: _hireDate!,
           status: _selectedStatus,
           address: _addressController.text.trim().isEmpty ? null : _addressController.text.trim(),
@@ -367,6 +380,18 @@ class _EmployeeFormScreenState extends State<EmployeeFormScreen> {
             controller: _positionController,
             label: '职位',
             hintText: '请输入职位名称',
+          ),
+          const SizedBox(height: 16),
+          _buildDropdownField(
+            label: '员工类型',
+            value: _employeeTypeOptions.firstWhere((option) => option['value'] == _selectedEmployeeType, orElse: () => _employeeTypeOptions[0])['label'],
+            items: _employeeTypeOptions.map((option) => option['label'] as String).toList(),
+            onChanged: (value) {
+              final selectedOption = _employeeTypeOptions.firstWhere((option) => option['label'] == value);
+              setState(() {
+                _selectedEmployeeType = selectedOption['value']!;
+              });
+            },
           ),
           const SizedBox(height: 16),
           _buildDateField(

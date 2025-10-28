@@ -8,6 +8,7 @@ class Employee {
   final String? email;
   final String? employeeNumber;
   final String? position;
+  final String employeeType;
   final DateTime hireDate;
   final String status;
   final String? address;
@@ -27,6 +28,7 @@ class Employee {
     this.email,
     this.employeeNumber,
     this.position,
+    this.employeeType = 'general',
     required this.hireDate,
     this.status = 'active',
     this.address,
@@ -51,6 +53,7 @@ class Employee {
       email: map['email'] as String?,
       employeeNumber: map['employee_number'] as String?,
       position: map['position'] as String?,
+      employeeType: map['employee_type'] as String? ?? 'general',
       hireDate: DateTime.parse(map['hire_date'] as String),
       status: map['status'] as String? ?? 'active',
       address: map['address'] as String?,
@@ -74,6 +77,7 @@ class Employee {
       'email': email,
       'employee_number': employeeNumber,
       'position': position,
+      'employee_type': employeeType,
       'hire_date': hireDate.toIso8601String().split('T')[0], // 只保留日期部分
       'status': status,
       'address': address,
@@ -96,6 +100,7 @@ class Employee {
       'email': email,
       'employee_number': employeeNumber,
       'position': position,
+      'employee_type': employeeType,
       'hire_date': hireDate.toIso8601String().split('T')[0],
       'status': status,
       'address': address,
@@ -115,6 +120,7 @@ class Employee {
     String? email,
     String? employeeNumber,
     String? position,
+    String? employeeType,
     DateTime? hireDate,
     String? status,
     String? address,
@@ -134,6 +140,7 @@ class Employee {
       email: email ?? this.email,
       employeeNumber: employeeNumber ?? this.employeeNumber,
       position: position ?? this.position,
+      employeeType: employeeType ?? this.employeeType,
       hireDate: hireDate ?? this.hireDate,
       status: status ?? this.status,
       address: address ?? this.address,
@@ -179,6 +186,28 @@ class Employee {
         return '离职';
       default:
         return '未知';
+    }
+  }
+
+  // 获取员工类型显示文本
+  String get employeeTypeDisplay {
+    switch (employeeType) {
+      case 'general':
+        return '一般工人';
+      case 'packager':
+        return '包装工';
+      case 'ironer':
+        return '烫衣工';
+      case 'seamstress':
+        return '缝纫工';
+      case 'cutter':
+        return '裁剪工';
+      case 'quality_inspector':
+        return '质检员';
+      case 'other':
+        return '其他';
+      default:
+        return '一般工人';
     }
   }
 
