@@ -36,6 +36,8 @@ dependencies:
   cupertino_icons: ^1.0.8
   supabase_flutter: ^2.5.0
   flutter_dotenv: ^5.1.0
+  intl: ^0.18.1
+  data_table_2: ^2.5.15
 
 
 dev_dependencies:

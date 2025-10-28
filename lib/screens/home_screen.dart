@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:xintai_flutter/service/auth_service.dart';
 import 'package:xintai_flutter/service/tenant_state_service.dart';
 import 'package:xintai_flutter/widgets/service_grid.dart';
+import 'package:xintai_flutter/widgets/message_dialog.dart';
 
 import 'customer/customer_list_screen.dart';
 import 'employee/employee_list_screen.dart';
 import 'salary/salary_list_screen.dart';
 import 'tenant_list_screen.dart';
+import 'piece_work/piece_work_main_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -93,9 +95,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       await _authService.signOut();
                       _tenantStateService.clearCurrentTenant();
                       if (context.mounted) {
-                        ScaffoldMessenger.of(
-                          context,
-                        ).showSnackBar(const SnackBar(content: Text('已退出登录')));
+                        context.showInfo('已退出登录');
                       }
                     }
                   }
@@ -183,10 +183,10 @@ class _HomeScreenState extends State<HomeScreen> {
         onTap: () => _handleServiceTap('薪资管理'),
       ),
       ServiceItem(
-        name: '考勤管理',
-        icon: Icons.schedule,
-        color: const Color(0xFF9C27B0),
-        onTap: () => _handleServiceTap('考勤管理'),
+        name: '计件工资',
+        icon: Icons.work_outline,
+        color: const Color(0xFF10B981),
+        onTap: () => _handleServiceTap('计件工资'),
       ),
       ServiceItem(
         name: '项目管理',
@@ -226,12 +226,7 @@ class _HomeScreenState extends State<HomeScreen> {
   // 处理服务点击
   void _handleServiceTap(String serviceName) {
     if (!_tenantStateService.hasCurrentTenant) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('请先选择一个租户'),
-          backgroundColor: Color(0xFFFF6B6B),
-        ),
-      );
+      context.showError('请先选择一个租户');
       return;
     }
 
@@ -254,10 +249,14 @@ class _HomeScreenState extends State<HomeScreen> {
           MaterialPageRoute(builder: (context) => const SalaryListScreen()),
         );
         break;
-      default:
-        ScaffoldMessenger.of(
+      case '计件工资':
+        Navigator.push(
           context,
-        ).showSnackBar(SnackBar(content: Text('$serviceName功能开发中')));
+          MaterialPageRoute(builder: (context) => const PieceWorkMainScreen()),
+        );
+        break;
+      default:
+        context.showInfo('$serviceName功能开发中');
         break;
     }
   }
