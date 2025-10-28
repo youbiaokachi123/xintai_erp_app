@@ -7,10 +7,8 @@ class Employee {
   final String? phone;
   final String? email;
   final String? employeeNumber;
-  final String? department;
   final String? position;
   final DateTime hireDate;
-  final double? salary;
   final String status;
   final String? address;
   final String? emergencyContactName;
@@ -28,10 +26,8 @@ class Employee {
     this.phone,
     this.email,
     this.employeeNumber,
-    this.department,
     this.position,
     required this.hireDate,
-    this.salary,
     this.status = 'active',
     this.address,
     this.emergencyContactName,
@@ -54,12 +50,8 @@ class Employee {
       phone: map['phone'] as String?,
       email: map['email'] as String?,
       employeeNumber: map['employee_number'] as String?,
-      department: map['department'] as String?,
       position: map['position'] as String?,
       hireDate: DateTime.parse(map['hire_date'] as String),
-      salary: map['salary'] != null
-          ? (map['salary'] as num).toDouble()
-          : null,
       status: map['status'] as String? ?? 'active',
       address: map['address'] as String?,
       emergencyContactName: map['emergency_contact_name'] as String?,
@@ -81,10 +73,8 @@ class Employee {
       'phone': phone,
       'email': email,
       'employee_number': employeeNumber,
-      'department': department,
       'position': position,
       'hire_date': hireDate.toIso8601String().split('T')[0], // 只保留日期部分
-      'salary': salary,
       'status': status,
       'address': address,
       'emergency_contact_name': emergencyContactName,
@@ -105,10 +95,8 @@ class Employee {
       'phone': phone,
       'email': email,
       'employee_number': employeeNumber,
-      'department': department,
       'position': position,
       'hire_date': hireDate.toIso8601String().split('T')[0],
-      'salary': salary,
       'status': status,
       'address': address,
       'emergency_contact_name': emergencyContactName,
@@ -126,10 +114,8 @@ class Employee {
     String? phone,
     String? email,
     String? employeeNumber,
-    String? department,
     String? position,
     DateTime? hireDate,
-    double? salary,
     String? status,
     String? address,
     String? emergencyContactName,
@@ -147,10 +133,8 @@ class Employee {
       phone: phone ?? this.phone,
       email: email ?? this.email,
       employeeNumber: employeeNumber ?? this.employeeNumber,
-      department: department ?? this.department,
       position: position ?? this.position,
       hireDate: hireDate ?? this.hireDate,
-      salary: salary ?? this.salary,
       status: status ?? this.status,
       address: address ?? this.address,
       emergencyContactName: emergencyContactName ?? this.emergencyContactName,
@@ -200,7 +184,7 @@ class Employee {
 
   @override
   String toString() {
-    return 'Employee(id: $id, name: $name, employeeNumber: $employeeNumber, department: $department)';
+    return 'Employee(id: $id, name: $name, employeeNumber: $employeeNumber)';
   }
 
   @override

@@ -20,7 +20,6 @@ class _EmployeeListScreenState extends State<EmployeeListScreen> {
   List<Employee> _filteredEmployees = [];
   bool _isLoading = false;
   String _searchQuery = '';
-  String? _selectedDepartment;
   String? _selectedStatus;
 
   @override
@@ -83,11 +82,6 @@ class _EmployeeListScreenState extends State<EmployeeListScreen> {
       ).toList();
     }
 
-    // 部门过滤
-    if (_selectedDepartment != null && _selectedDepartment!.isNotEmpty) {
-      filtered = filtered.where((employee) => employee.department == _selectedDepartment).toList();
-    }
-
     // 状态过滤
     if (_selectedStatus != null && _selectedStatus!.isNotEmpty) {
       filtered = filtered.where((employee) => employee.status == _selectedStatus).toList();
@@ -98,12 +92,7 @@ class _EmployeeListScreenState extends State<EmployeeListScreen> {
     });
   }
 
-  List<String> _getDepartments() {
-    final departments = _employees.map((e) => e.department).where((d) => d != null && d.isNotEmpty).toSet().cast<String>().toList();
-    departments.sort();
-    return departments;
-  }
-
+  
   Future<void> _deleteEmployee(Employee employee) async {
     final confirmed = await showDialog<bool>(
       context: context,
@@ -231,67 +220,31 @@ class _EmployeeListScreenState extends State<EmployeeListScreen> {
                 const SizedBox(height: 12),
 
                 // 筛选选项
-                Row(
-                  children: [
-                    Expanded(
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 12),
-                        decoration: BoxDecoration(
-                          border: Border.all(color: const Color(0xFFE5E7EB)),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: DropdownButtonHideUnderline(
-                          child: DropdownButton<String>(
-                            hint: const Text('部门', style: TextStyle(color: Color(0xFF9CA3AF))),
-                            value: _selectedDepartment,
-                            isExpanded: true,
-                            items: [
-                              const DropdownMenuItem(value: null, child: Text('全部部门')),
-                              ..._getDepartments().map((department) => DropdownMenuItem(
-                                value: department,
-                                child: Text(department),
-                              )),
-                            ],
-                            onChanged: (value) {
-                              setState(() {
-                                _selectedDepartment = value;
-                                _applyFilters();
-                              });
-                            },
-                          ),
-                        ),
-                      ),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: const Color(0xFFE5E7EB)),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: DropdownButtonHideUnderline(
+                    child: DropdownButton<String>(
+                      hint: const Text('状态', style: TextStyle(color: Color(0xFF9CA3AF))),
+                      value: _selectedStatus,
+                      isExpanded: true,
+                      items: const [
+                        DropdownMenuItem(value: null, child: Text('全部状态')),
+                        DropdownMenuItem(value: 'active', child: Text('在职')),
+                        DropdownMenuItem(value: 'inactive', child: Text('休假')),
+                        DropdownMenuItem(value: 'resigned', child: Text('离职')),
+                      ],
+                      onChanged: (value) {
+                        setState(() {
+                          _selectedStatus = value;
+                          _applyFilters();
+                        });
+                      },
                     ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 12),
-                        decoration: BoxDecoration(
-                          border: Border.all(color: const Color(0xFFE5E7EB)),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: DropdownButtonHideUnderline(
-                          child: DropdownButton<String>(
-                            hint: const Text('状态', style: TextStyle(color: Color(0xFF9CA3AF))),
-                            value: _selectedStatus,
-                            isExpanded: true,
-                            items: const [
-                              DropdownMenuItem(value: null, child: Text('全部状态')),
-                              DropdownMenuItem(value: 'active', child: Text('在职')),
-                              DropdownMenuItem(value: 'inactive', child: Text('休假')),
-                              DropdownMenuItem(value: 'resigned', child: Text('离职')),
-                            ],
-                            onChanged: (value) {
-                              setState(() {
-                                _selectedStatus = value;
-                                _applyFilters();
-                              });
-                            },
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
               ],
             ),
@@ -322,7 +275,7 @@ class _EmployeeListScreenState extends State<EmployeeListScreen> {
           ),
           const SizedBox(height: 16),
           Text(
-            _searchQuery.isNotEmpty || _selectedDepartment != null || _selectedStatus != null
+            _searchQuery.isNotEmpty || _selectedStatus != null
                 ? '没有找到符合条件的员工'
                 : '暂无员工数据',
             style: const TextStyle(
@@ -331,7 +284,7 @@ class _EmployeeListScreenState extends State<EmployeeListScreen> {
               fontWeight: FontWeight.w500,
             ),
           ),
-          if (_searchQuery.isEmpty && _selectedDepartment == null && _selectedStatus == null) ...[
+          if (_searchQuery.isEmpty && _selectedStatus == null) ...[
             const SizedBox(height: 8),
             const Text(
               '点击右上角的 + 按钮添加第一个员工',
@@ -442,15 +395,6 @@ class _EmployeeListScreenState extends State<EmployeeListScreen> {
                         if (employee.employeeNumber != null) ...[
                           Text(
                             '工号: ${employee.employeeNumber}',
-                            style: const TextStyle(
-                              fontSize: 12,
-                              color: Color(0xFF6B7280),
-                            ),
-                          ),
-                        ],
-                        if (employee.department != null) ...[
-                          Text(
-                            employee.department!,
                             style: const TextStyle(
                               fontSize: 12,
                               color: Color(0xFF6B7280),

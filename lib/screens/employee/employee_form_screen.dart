@@ -21,9 +21,7 @@ class _EmployeeFormScreenState extends State<EmployeeFormScreen> {
   late TextEditingController _employeeNumberController;
   late TextEditingController _phoneController;
   late TextEditingController _emailController;
-  late TextEditingController _departmentController;
   late TextEditingController _positionController;
-  late TextEditingController _salaryController;
   late TextEditingController _addressController;
   late TextEditingController _emergencyContactNameController;
   late TextEditingController _emergencyContactPhoneController;
@@ -56,9 +54,7 @@ class _EmployeeFormScreenState extends State<EmployeeFormScreen> {
     _employeeNumberController = TextEditingController();
     _phoneController = TextEditingController();
     _emailController = TextEditingController();
-    _departmentController = TextEditingController();
     _positionController = TextEditingController();
-    _salaryController = TextEditingController();
     _addressController = TextEditingController();
     _emergencyContactNameController = TextEditingController();
     _emergencyContactPhoneController = TextEditingController();
@@ -75,9 +71,7 @@ class _EmployeeFormScreenState extends State<EmployeeFormScreen> {
     _employeeNumberController.text = employee.employeeNumber ?? '';
     _phoneController.text = employee.phone ?? '';
     _emailController.text = employee.email ?? '';
-    _departmentController.text = employee.department ?? '';
     _positionController.text = employee.position ?? '';
-    _salaryController.text = employee.salary?.toString() ?? '';
     _addressController.text = employee.address ?? '';
     _emergencyContactNameController.text = employee.emergencyContactName ?? '';
     _emergencyContactPhoneController.text = employee.emergencyContactPhone ?? '';
@@ -93,9 +87,7 @@ class _EmployeeFormScreenState extends State<EmployeeFormScreen> {
     _employeeNumberController.dispose();
     _phoneController.dispose();
     _emailController.dispose();
-    _departmentController.dispose();
     _positionController.dispose();
-    _salaryController.dispose();
     _addressController.dispose();
     _emergencyContactNameController.dispose();
     _emergencyContactPhoneController.dispose();
@@ -117,9 +109,6 @@ class _EmployeeFormScreenState extends State<EmployeeFormScreen> {
     });
 
     try {
-      final salary = _salaryController.text.isNotEmpty
-          ? double.tryParse(_salaryController.text)
-          : null;
 
       if (widget.employee == null) {
         // 创建新员工
@@ -130,10 +119,8 @@ class _EmployeeFormScreenState extends State<EmployeeFormScreen> {
           phone: _phoneController.text.trim().isEmpty ? null : _phoneController.text.trim(),
           email: _emailController.text.trim().isEmpty ? null : _emailController.text.trim(),
           employeeNumber: _employeeNumberController.text.trim().isEmpty ? null : _employeeNumberController.text.trim(),
-          department: _departmentController.text.trim().isEmpty ? null : _departmentController.text.trim(),
           position: _positionController.text.trim().isEmpty ? null : _positionController.text.trim(),
           hireDate: _hireDate!,
-          salary: salary,
           status: _selectedStatus,
           address: _addressController.text.trim().isEmpty ? null : _addressController.text.trim(),
           emergencyContactName: _emergencyContactNameController.text.trim().isEmpty ? null : _emergencyContactNameController.text.trim(),
@@ -150,10 +137,8 @@ class _EmployeeFormScreenState extends State<EmployeeFormScreen> {
           phone: _phoneController.text.trim().isEmpty ? null : _phoneController.text.trim(),
           email: _emailController.text.trim().isEmpty ? null : _emailController.text.trim(),
           employeeNumber: _employeeNumberController.text.trim().isEmpty ? null : _employeeNumberController.text.trim(),
-          department: _departmentController.text.trim().isEmpty ? null : _departmentController.text.trim(),
           position: _positionController.text.trim().isEmpty ? null : _positionController.text.trim(),
           hireDate: _hireDate!,
-          salary: salary,
           status: _selectedStatus,
           address: _addressController.text.trim().isEmpty ? null : _addressController.text.trim(),
           emergencyContactName: _emergencyContactNameController.text.trim().isEmpty ? null : _emergencyContactNameController.text.trim(),
@@ -379,12 +364,6 @@ class _EmployeeFormScreenState extends State<EmployeeFormScreen> {
       child: Column(
         children: [
           _buildTextField(
-            controller: _departmentController,
-            label: '部门',
-            hintText: '请输入部门名称',
-          ),
-          const SizedBox(height: 16),
-          _buildTextField(
             controller: _positionController,
             label: '职位',
             hintText: '请输入职位名称',
@@ -397,22 +376,6 @@ class _EmployeeFormScreenState extends State<EmployeeFormScreen> {
             validator: (value) {
               if (_hireDate == null) {
                 return '请选择入职时间';
-              }
-              return null;
-            },
-          ),
-          const SizedBox(height: 16),
-          _buildTextField(
-            controller: _salaryController,
-            label: '薪资',
-            hintText: '请输入薪资金额',
-            keyboardType: TextInputType.number,
-            validator: (value) {
-              if (value != null && value.isNotEmpty) {
-                final salary = double.tryParse(value);
-                if (salary == null || salary < 0) {
-                  return '请输入有效的薪资金额';
-                }
               }
               return null;
             },

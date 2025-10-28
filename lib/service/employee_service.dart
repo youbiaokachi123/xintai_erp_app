@@ -55,10 +55,8 @@ class EmployeeService {
     String? phone,
     String? email,
     String? employeeNumber,
-    String? department,
     String? position,
     required DateTime hireDate,
-    double? salary,
     String status = 'active',
     String? address,
     String? emergencyContactName,
@@ -90,10 +88,8 @@ class EmployeeService {
         'phone': phone,
         'email': email,
         'employee_number': employeeNumber,
-        'department': department,
         'position': position,
         'hire_date': hireDate.toIso8601String().split('T')[0],
-        'salary': salary,
         'status': status,
         'address': address,
         'emergency_contact_name': emergencyContactName,
@@ -122,10 +118,8 @@ class EmployeeService {
     String? phone,
     String? email,
     String? employeeNumber,
-    String? department,
     String? position,
     DateTime? hireDate,
-    double? salary,
     String? status,
     String? address,
     String? emergencyContactName,
@@ -156,10 +150,8 @@ class EmployeeService {
       if (phone != null) updateData['phone'] = phone;
       if (email != null) updateData['email'] = email;
       if (employeeNumber != null) updateData['employee_number'] = employeeNumber;
-      if (department != null) updateData['department'] = department;
       if (position != null) updateData['position'] = position;
       if (hireDate != null) updateData['hire_date'] = hireDate.toIso8601String().split('T')[0];
-      if (salary != null) updateData['salary'] = salary;
       if (status != null) updateData['status'] = status;
       if (address != null) updateData['address'] = address;
       if (emergencyContactName != null) updateData['emergency_contact_name'] = emergencyContactName;
@@ -217,29 +209,7 @@ class EmployeeService {
     }
   }
 
-  /// 根据部门筛选员工
-  Future<List<Employee>> getEmployeesByDepartment(String department) async {
-    try {
-      if (!_tenantService.hasCurrentTenant) {
-        throw Exception('请先选择租户');
-      }
-
-      final response = await _supabase
-          .from('employees')
-          .select()
-          .eq('tenant_id', _tenantService.currentTenantId!)
-          .eq('department', department)
-          .order('created_at', ascending: false);
-
-      return (response as List)
-          .whereType<Map<String, dynamic>>()
-          .map((json) => Employee.fromMap(json))
-          .toList();
-    } catch (e) {
-      throw Exception('获取部门员工失败: $e');
-    }
-  }
-
+  
   /// 根据状态筛选员工
   Future<List<Employee>> getEmployeesByStatus(String status) async {
     try {
