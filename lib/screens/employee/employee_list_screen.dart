@@ -315,181 +315,155 @@ class _EmployeeListScreenState extends State<EmployeeListScreen> {
 
   Widget _buildEmployeeCard(Employee employee) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 12),
+      margin: const EdgeInsets.only(bottom: 8),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
-          ),
-        ],
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(
+          color: const Color(0xFFE5E7EB),
+          width: 1,
+        ),
       ),
-      child: InkWell(
-        onTap: () => _navigateToForm(employee),
-        borderRadius: BorderRadius.circular(12),
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  // 头像
-                  Container(
-                    width: 48,
-                    height: 48,
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF4A90E2).withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(24),
-                    ),
-                    child: Center(
-                      child: Text(
-                        employee.name.isNotEmpty ? employee.name[0] : '?',
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
-                          color: Color(0xFF4A90E2),
-                        ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () => _navigateToForm(employee),
+          borderRadius: BorderRadius.circular(8),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            child: Row(
+              children: [
+                // 头像
+                Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF4A90E2).withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Center(
+                    child: Text(
+                      employee.name.isNotEmpty ? employee.name[0] : '?',
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: Color(0xFF4A90E2),
                       ),
                     ),
                   ),
-                  const SizedBox(width: 12),
+                ),
+                const SizedBox(width: 12),
 
-                  // 基本信息
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Text(
+                // 主要信息
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(
                               employee.name,
                               style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
+                                fontSize: 15,
+                                fontWeight: FontWeight.w500,
                                 color: Color(0xFF1F2937),
                               ),
                             ),
-                            const SizedBox(width: 8),
-                            Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                              decoration: BoxDecoration(
-                                color: _getStatusColor(employee.status).withOpacity(0.1),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: Text(
-                                employee.statusDisplay,
-                                style: TextStyle(
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.w500,
-                                  color: _getStatusColor(employee.status),
-                                ),
-                              ),
+                          ),
+                          const SizedBox(width: 8),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                            decoration: BoxDecoration(
+                              color: _getStatusColor(employee.status).withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(12),
                             ),
-                          ],
-                        ),
-                        const SizedBox(height: 4),
-                        if (employee.employeeNumber != null) ...[
-                          Text(
-                            '工号: ${employee.employeeNumber}',
-                            style: const TextStyle(
-                              fontSize: 12,
-                              color: Color(0xFF6B7280),
+                            child: Text(
+                              employee.statusDisplay,
+                              style: TextStyle(
+                                fontSize: 11,
+                                fontWeight: FontWeight.w500,
+                                color: _getStatusColor(employee.status),
+                              ),
                             ),
                           ),
                         ],
+                      ),
+                      const SizedBox(height: 4),
+                      Row(
+                        children: [
+                          if (employee.employeeNumber != null) ...[
+                            Text(
+                              '工号: ${employee.employeeNumber}',
+                              style: const TextStyle(
+                                fontSize: 12,
+                                color: Color(0xFF6B7280),
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                          ],
+                          Text(
+                            employee.employeeTypeDisplay,
+                            style: const TextStyle(
+                              fontSize: 12,
+                              color: Color(0xFF059669),
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                        ],
+                      ),
+                      if (employee.position != null) ...[
+                        const SizedBox(height: 2),
                         Text(
-                          employee.employeeTypeDisplay,
+                          employee.position!,
                           style: const TextStyle(
                             fontSize: 12,
-                            color: Color(0xFF059669),
-                            fontWeight: FontWeight.w500,
+                            color: Color(0xFF6B7280),
                           ),
                         ),
                       ],
+                    ],
+                  ),
+                ),
+
+                // 操作按钮
+                PopupMenuButton<String>(
+                  icon: const Icon(Icons.more_vert, color: Color(0xFF6B7280), size: 20),
+                  itemBuilder: (context) => [
+                    const PopupMenuItem(
+                      value: 'edit',
+                      child: Row(
+                        children: [
+                          Icon(Icons.edit, size: 16, color: Color(0xFF4A90E2)),
+                          SizedBox(width: 8),
+                          Text('编辑'),
+                        ],
+                      ),
                     ),
-                  ),
-
-                  // 操作按钮
-                  PopupMenuButton<String>(
-                    icon: const Icon(Icons.more_vert, color: Color(0xFF9CA3AF)),
-                    itemBuilder: (context) => [
-                      const PopupMenuItem(
-                        value: 'edit',
-                        child: Row(
-                          children: [
-                            Icon(Icons.edit, size: 16, color: Color(0xFF4A90E2)),
-                            SizedBox(width: 8),
-                            Text('编辑'),
-                          ],
-                        ),
+                    const PopupMenuItem(
+                      value: 'delete',
+                      child: Row(
+                        children: [
+                          Icon(Icons.delete, size: 16, color: Colors.red),
+                          SizedBox(width: 8),
+                          Text('删除'),
+                        ],
                       ),
-                      const PopupMenuItem(
-                        value: 'delete',
-                        child: Row(
-                          children: [
-                            Icon(Icons.delete, size: 16, color: Colors.red),
-                            SizedBox(width: 8),
-                            Text('删除'),
-                          ],
-                        ),
-                      ),
-                    ],
-                    onSelected: (value) {
-                      switch (value) {
-                        case 'edit':
-                          _navigateToForm(employee);
-                          break;
-                        case 'delete':
-                          _deleteEmployee(employee);
-                          break;
-                      }
-                    },
-                  ),
-                ],
-              ),
-
-              // 详细信息
-              if (employee.phone != null || employee.position != null) ...[
-                const SizedBox(height: 12),
-                const Divider(height: 1),
-                const SizedBox(height: 12),
-                Row(
-                  children: [
-                    if (employee.position != null) ...[
-                      Icon(Icons.work_outline, size: 16, color: const Color(0xFF6B7280)),
-                      const SizedBox(width: 4),
-                      Text(
-                        employee.position!,
-                        style: const TextStyle(
-                          fontSize: 12,
-                          color: Color(0xFF6B7280),
-                        ),
-                      ),
-                    ],
-                    if (employee.position != null && employee.phone != null) ...[
-                      const SizedBox(width: 16),
-                      const Text('·', style: TextStyle(color: Color(0xFF6B7280))),
-                      const SizedBox(width: 16),
-                    ],
-                    if (employee.phone != null) ...[
-                      Icon(Icons.phone_outlined, size: 16, color: const Color(0xFF6B7280)),
-                      const SizedBox(width: 4),
-                      Text(
-                        employee.phone!,
-                        style: const TextStyle(
-                          fontSize: 12,
-                          color: Color(0xFF6B7280),
-                        ),
-                      ),
-                    ],
+                    ),
                   ],
+                  onSelected: (value) {
+                    switch (value) {
+                      case 'edit':
+                        _navigateToForm(employee);
+                        break;
+                      case 'delete':
+                        _deleteEmployee(employee);
+                        break;
+                    }
+                  },
                 ),
               ],
-            ],
+            ),
           ),
         ),
       ),
